@@ -1,0 +1,10 @@
+{
+  "catalogs": {},
+  "aliases": {
+    "test": {
+      "script-ref": "test.java",
+      "description": "`gavsearch` lets you use search.maven.org from command line.\nExample: `gavsearch hibernate` will search for artifacts with hibernate in its name.\nYou can use any of the search modifiers search.maven.org supports, i.e.:\n`gavsearch c:QuarkusTest` will search for artifacts with class `QuarkusTest`"
+    }
+  },
+  "templates": {}
+}
