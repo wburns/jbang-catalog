@@ -5,10 +5,10 @@
 //DEPS org.jboss.resteasy:resteasy-jackson2-provider:6.2.5.Final
 //DEPS de.codeshelf.consoleui:consoleui:0.0.13
 
-//DESCRIPTION `gavsearch` lets you use search.maven.org from command line.
-//DESCRIPTION Example: `gavsearch hibernate` will search for artifacts with hibernate in its name.
+//DESCRIPTION `test` lets you use search.maven.org from command line.
+//DESCRIPTION Example: `test hibernate` will search for artifacts with hibernate in its name.
 //DESCRIPTION You can use any of the search modifiers search.maven.org supports, i.e.:
-//DESCRIPTION `gavsearch c:QuarkusTest` will search for artifacts with class `QuarkusTest`
+//DESCRIPTION `test c:QuarkusTest` will search for artifacts with class `QuarkusTest`
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.codeshelf.consoleui.prompt.ConsolePrompt;
@@ -43,7 +43,7 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 @Command(name = "gavsearch", mixinStandardHelpOptions = true, version = "gavsearch 0.1",
         description = "mvnsearch made with jbang")
-public class gavsearch implements Callable<Integer> {
+public class test implements Callable<Integer> {
 
     @Parameters(index = "0", description = "Query string to use when searching search.maven.org")
     private String query;
@@ -60,7 +60,7 @@ public class gavsearch implements Callable<Integer> {
     private List<String> filters = new ArrayList<String>();
 
     public static void main(String... args) {
-        int exitCode = new CommandLine(new gavsearch()).execute(args);
+        int exitCode = new CommandLine(new test()).execute(args);
         System.exit(exitCode);
     }
 
@@ -170,7 +170,7 @@ public class gavsearch implements Callable<Integer> {
         return 0;
     }
 
-    public boolean filterMatch(gavsearch.Doc x) {
+    public boolean filterMatch(test.Doc x) {
         if(filters.isEmpty()) return true;
 
         int matches = 0;
