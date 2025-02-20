@@ -1,5 +1,5 @@
 //usr/bin/env jbang "$0" "$@" ; exit $?
-//JAVA 11+
+//JAVA 21+
 //DEPS info.picocli:picocli:4.7.5
 //DEPS org.jboss.resteasy:resteasy-client:6.2.5.Final
 //DEPS org.jboss.resteasy:resteasy-jackson2-provider:6.2.5.Final
@@ -41,7 +41,7 @@ import java.util.function.Function;
 import static java.lang.System.out;
 import static org.fusesource.jansi.Ansi.ansi;
 
-@Command(name = "gavsearch", mixinStandardHelpOptions = true, version = "gavsearch 0.1",
+@Command(name = "test", mixinStandardHelpOptions = true, version = "test 0.1",
         description = "mvnsearch made with jbang")
 public class test implements Callable<Integer> {
 
