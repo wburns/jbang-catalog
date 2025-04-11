@@ -1,10 +1,6 @@
 {
   "catalogs": {},
   "aliases": {
-    "test": {
-      "script-ref": "test.java",
-      "description": "`test` lets you use search.maven.org from command line.\nExample: `test hibernate` will search for artifacts with hibernate in its name.\nYou can use any of the search modifiers search.maven.org supports, i.e.:\n`test c:QuarkusTest` will search for artifacts with class `QuarkusTest`"
-    },
     "rollingupgrade": {
       "script-ref": "rollingupgrade.java",
       "description": "`rollingupgrade` lets you test an in place rolling upgrade of `Infinispan` servers with two different versions."
