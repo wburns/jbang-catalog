@@ -7,8 +7,14 @@
 //DEPS org.jboss:jandex:2.4.3.Final
 
 import java.io.IOException;
+import java.net.SocketAddress;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.infinispan.client.hotrod.RemoteCache;
+import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.server.test.core.rollingupgrade.UpgradeConfiguration;
 import org.infinispan.server.test.core.rollingupgrade.UpgradeConfigurationBuilder;
 import org.infinispan.server.test.core.rollingupgrade.UpgradeHandler;
@@ -38,10 +44,13 @@ class rollingupgrade implements Callable<Integer> {
    boolean waitOnException;
 
    @Parameters(index = "0", description = "Old version to migrate from. Supports image name at quay.io/infinispan/server, any local image (prepended by image://) or a server directory (prepended by file://)")
-   private String versionFrom;
+   String versionFrom;
 
    @Parameters(index = "1", description = "New version to migrate to. Supports image name at quay.io/infinispan/server, any local image (prepended by image://) or a server directory (prepended by file://)")
-   private String versionTo;
+   String versionTo;
+
+   @Option(names = "-m", defaultValue = "false", description = "If the servers should not use a shared mounted data directory beetween versions")
+   boolean noDataMount;
 
    public static void main(String... args) {
       int exitCode = new CommandLine(new rollingupgrade()).execute(args);
@@ -59,7 +68,8 @@ class rollingupgrade implements Callable<Integer> {
 
       builder = builder.nodeCount(nodeCount)
             .jgroupsProtocol(jgroupsProtocol)
-            .xSite(xsite);
+            .xSite(xsite)
+            .sharedDataMount(!noDataMount);
 
       if (waitOnException || dumpLogsOnException) {
          builder = builder.exceptionHandler((t, uh) -> {
@@ -81,6 +91,18 @@ class rollingupgrade implements Callable<Integer> {
                }
             }
             if (waitOnException) {
+               t.printStackTrace();
+               System.out.println("Attempting new connection to server to see status");
+               try {
+                  RemoteCacheManager manager = uh.createRemoteCacheManager();
+                  RemoteCache<?, ?> cache = manager.getCache("rolling-upgrade");
+                  cache.get("foo");
+                  Set<SocketAddress> servers = cache.getCacheTopologyInfo().getSegmentsPerServer().keySet();
+                  System.out.println("Created new cache manager with client and servers found were: " + servers);
+               } catch (Throwable innerT) {
+                  System.out.println("Unable to create CacheManager and cache to verify members");
+                  innerT.printStackTrace();
+               }
                System.out.println("Waiting for user to press enter to shutdown server nodes");
                try {
                   System.in.read();
@@ -94,6 +116,8 @@ class rollingupgrade implements Callable<Integer> {
       UpgradeConfiguration config = builder.build();
 
       UpgradeHandler.performUpgrade(config);
+
+      System.out.println("Upgrade from " + versionFrom + " to " + versionTo + " completed successfully!");
 
       return 0;
    }
