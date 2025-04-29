@@ -10,14 +10,12 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.server.test.core.rollingupgrade.UpgradeConfiguration;
-import org.infinispan.server.test.core.rollingupgrade.UpgradeConfigurationBuilder;
-import org.infinispan.server.test.core.rollingupgrade.UpgradeHandler;
+import org.infinispan.server.test.core.rollingupgrade.RollingUpgradeConfiguration;
+import org.infinispan.server.test.core.rollingupgrade.RollingUpgradeConfigurationBuilder;
+import org.infinispan.server.test.core.rollingupgrade.RollingUpgradeHandler;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -64,7 +62,7 @@ class rollingupgrade implements Callable<Integer> {
       }
       System.out.println("Rolling upgrade from: " + versionFrom + " to " + versionTo + " with " + nodeCount + " nodes");
 
-      UpgradeConfigurationBuilder builder = new UpgradeConfigurationBuilder(versionFrom, versionTo);
+      RollingUpgradeConfigurationBuilder builder = new RollingUpgradeConfigurationBuilder(versionFrom, versionTo);
 
       builder = builder.nodeCount(nodeCount)
             .jgroupsProtocol(jgroupsProtocol)
@@ -113,9 +111,9 @@ class rollingupgrade implements Callable<Integer> {
          });
       }
 
-      UpgradeConfiguration config = builder.build();
+      RollingUpgradeConfiguration config = builder.build();
 
-      UpgradeHandler.performUpgrade(config);
+      RollingUpgradeHandler.performUpgrade(config);
 
       System.out.println("Upgrade from " + versionFrom + " to " + versionTo + " completed successfully!");
 
